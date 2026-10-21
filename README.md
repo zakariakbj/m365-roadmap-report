@@ -115,6 +115,10 @@ A weekly run writes a few lines, so rotation is optional. On Linux, logrotate ca
 }
 ```
 
+## Updating
+
+Releases are listed on the [releases page](https://github.com/zakariakbj/m365-roadmap-report/releases), with their changes in [CHANGELOG.md](CHANGELOG.md). The version that sent a report is shown in its footer and in the log. A major version (`2.0.0`) means your configuration needs a change: read its changelog entry before updating.
+
 ## Development
 
 Tests use [Pester](https://pester.dev) 5+, and the code is checked with [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer):

@@ -1,0 +1,4 @@
+env.ini
+logs/
+*.html
+.DS_Store

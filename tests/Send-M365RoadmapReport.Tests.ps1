@@ -64,7 +64,8 @@ Describe "Version" {
         $SCRIPT_VERSION | Should -Match '^\d+\.\d+\.\d+$'
         $script = Get-Content (Join-Path $RepoRoot "Send-M365RoadmapReport.ps1") -Raw
         $script | Should -Match "Version : $([regex]::Escape($SCRIPT_VERSION))\s"
-        $changelog = Get-Content (Join-Path $RepoRoot "CHANGELOG.md") -Raw
+        # Windows checkouts use CRLF, which (?m)$ does not match
+        $changelog = (Get-Content (Join-Path $RepoRoot "CHANGELOG.md") -Raw) -replace "`r`n", "`n"
         [regex]::Match($changelog, '(?m)^## \[(\d+\.\d+\.\d+)\]').Groups[1].Value | Should -Be $SCRIPT_VERSION
         $changelog | Should -Match "(?m)^\[$([regex]::Escape($SCRIPT_VERSION))\]: .*/releases/tag/v$([regex]::Escape($SCRIPT_VERSION))$"
     }

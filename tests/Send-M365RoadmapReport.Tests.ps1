@@ -59,6 +59,22 @@ BeforeAll {
     }
 }
 
+Describe "Version" {
+    It "matches the .NOTES header and the latest CHANGELOG.md release" {
+        $SCRIPT_VERSION | Should -Match '^\d+\.\d+\.\d+$'
+        $script = Get-Content (Join-Path $RepoRoot "Send-M365RoadmapReport.ps1") -Raw
+        $script | Should -Match "Version : $([regex]::Escape($SCRIPT_VERSION))\s"
+        # Windows checkouts use CRLF, which (?m)$ does not match
+        $changelog = (Get-Content (Join-Path $RepoRoot "CHANGELOG.md") -Raw) -replace "`r`n", "`n"
+        [regex]::Match($changelog, '(?m)^## \[(\d+\.\d+\.\d+)\]').Groups[1].Value | Should -Be $SCRIPT_VERSION
+        $changelog | Should -Match "(?m)^\[$([regex]::Escape($SCRIPT_VERSION))\]: .*/releases/tag/v$([regex]::Escape($SCRIPT_VERSION))$"
+    }
+
+    It "is shown in the report footer" {
+        ConvertTo-ReportHtml -Messages @() -RoadmapItems @() -Warnings @() | Should -Match "m365-roadmap-report</a> $([regex]::Escape($SCRIPT_VERSION))"
+    }
+}
+
 Describe "Import-Config" {
     BeforeEach {
         $names = "M365RR_TEST_A", "M365RR_TEST_B", "M365RR_TEST_C"
